@@ -1,0 +1,109 @@
+# AI Automation Platform Requirements
+# Core dependencies for insights, policies, agents, review queue, vector memory, and payments
+
+# Web Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+jinja2==3.1.2
+
+# Database
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+alembic==1.12.1
+
+# AI and Machine Learning
+openai==1.3.5
+anthropic==0.7.8
+scikit-learn==1.3.2
+numpy==1.24.4
+pandas==2.1.4
+textblob==0.17.1
+spacy==3.7.2
+
+# Optional AI Dependencies (install based on needs)
+# sentence-transformers==2.2.2  # For vector embeddings
+# ollama==0.1.7  # For local LLM support
+# transformers==4.35.2  # For Qwen and other models
+# torch==2.1.1  # Required for transformers
+# faiss-cpu==1.7.4  # For fast similarity search
+
+# Data Processing and Visualization
+matplotlib==3.8.2
+seaborn==0.13.0
+plotly==5.17.0
+
+# HTTP and API
+httpx==0.25.2
+requests==2.31.0
+aiohttp==3.9.1
+
+# Async and Task Processing
+celery==5.3.4
+redis==5.0.1
+
+# Payment Processing
+stripe==7.8.0
+web3==6.12.0
+
+# Utilities
+python-dotenv==1.0.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-dateutil==2.8.2
+pytz==2023.3
+
+# Development and Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+black==23.11.0
+flake8==6.1.0
+mypy==1.7.1
+
+# Monitoring and Logging
+prometheus-client==0.19.0
+structlog==23.2.0
+
+# Security
+cryptography==41.0.8
+bcrypt==4.1.2
+
+# File Processing
+pypdf2==3.0.1
+openpyxl==3.1.2
+python-docx==1.1.0
+
+# Image Processing (for QR codes)
+qrcode[pil]==7.4.2
+pillow==10.1.0
+
+# Environment and Configuration
+click==8.1.7
+typer==0.9.0
+
+# Job Scheduling
+apscheduler==3.10.4
+
+# Blockchain and Crypto (optional)
+# bitcoinlib==0.12.0
+# ethereum==2.3.2
+
+# Optional Vector Search Dependencies
+# Install these for enhanced vector memory capabilities:
+# sentence-transformers>=2.2.2
+# faiss-cpu>=1.7.4  # or faiss-gpu for GPU support
+
+# Optional Local LLM Dependencies  
+# Install these for local model support:
+# ollama>=0.1.7
+# transformers>=4.35.0
+# torch>=2.1.0
+# accelerate>=0.25.0
+
+# Optional Advanced ML Dependencies
+# tiktoken>=0.5.2  # For token counting
+# langchain>=0.0.350  # For advanced LLM workflows
+# chromadb>=0.4.18  # Alternative vector database
