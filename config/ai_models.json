@@ -1,0 +1,234 @@
+{
+  "models": {
+    "gpt-4": {
+      "provider": "openai",
+      "display_name": "GPT-4",
+      "capabilities": [
+        "text_generation",
+        "code_analysis", 
+        "complex_reasoning",
+        "math_calculations",
+        "creative_writing"
+      ],
+      "parameters": {
+        "max_tokens": 4096,
+        "temperature": 0.7,
+        "top_p": 1.0,
+        "frequency_penalty": 0.0,
+        "presence_penalty": 0.0
+      },
+      "cost": {
+        "input_tokens": 0.03,
+        "output_tokens": 0.06,
+        "currency": "USD",
+        "per_1k_tokens": true
+      },
+      "rate_limits": {
+        "requests_per_minute": 500,
+        "tokens_per_minute": 150000
+      },
+      "use_cases": [
+        "complex_analysis",
+        "strategic_planning",
+        "code_review",
+        "financial_modeling"
+      ],
+      "quality_score": 0.95
+    },
+    "claude-3-sonnet": {
+      "provider": "anthropic",
+      "display_name": "Claude 3 Sonnet",
+      "capabilities": [
+        "text_generation",
+        "analysis",
+        "creative_writing",
+        "code_generation",
+        "data_analysis"
+      ],
+      "parameters": {
+        "max_tokens": 4096,
+        "temperature": 0.7
+      },
+      "cost": {
+        "input_tokens": 0.003,
+        "output_tokens": 0.015,
+        "currency": "USD", 
+        "per_1k_tokens": true
+      },
+      "rate_limits": {
+        "requests_per_minute": 1000,
+        "tokens_per_minute": 200000
+      },
+      "use_cases": [
+        "customer_support",
+        "content_creation",
+        "data_interpretation",
+        "research_analysis"
+      ],
+      "quality_score": 0.92
+    },
+    "gpt-3.5-turbo": {
+      "provider": "openai",
+      "display_name": "GPT-3.5 Turbo",
+      "capabilities": [
+        "text_generation",
+        "basic_analysis",
+        "customer_support",
+        "content_creation"
+      ],
+      "parameters": {
+        "max_tokens": 4096,
+        "temperature": 0.7
+      },
+      "cost": {
+        "input_tokens": 0.0015,
+        "output_tokens": 0.002,
+        "currency": "USD",
+        "per_1k_tokens": true
+      },
+      "rate_limits": {
+        "requests_per_minute": 3500,
+        "tokens_per_minute": 90000
+      },
+      "use_cases": [
+        "simple_tasks",
+        "customer_inquiries",
+        "basic_content",
+        "data_formatting"
+      ],
+      "quality_score": 0.82
+    },
+    "ollama-llama2": {
+      "provider": "ollama",
+      "display_name": "Llama 2 (Local)",
+      "capabilities": [
+        "text_generation",
+        "basic_reasoning",
+        "content_creation"
+      ],
+      "parameters": {
+        "temperature": 0.7,
+        "top_p": 0.9,
+        "max_tokens": 2048
+      },
+      "cost": {
+        "input_tokens": 0.0,
+        "output_tokens": 0.0,
+        "currency": "USD",
+        "infrastructure_cost": 0.05
+      },
+      "rate_limits": {
+        "concurrent_requests": 4,
+        "queue_size": 20
+      },
+      "use_cases": [
+        "private_data",
+        "offline_processing",
+        "cost_optimization",
+        "development_testing"
+      ],
+      "quality_score": 0.75
+    }
+  },
+  "routing_rules": {
+    "cost_optimization": {
+      "name": "Cost-Optimized Routing",
+      "description": "Route to cheapest model that meets quality requirements",
+      "rules": [
+        {
+          "condition": "task_complexity == 'simple' AND quality_requirement <= 0.8",
+          "route_to": "gpt-3.5-turbo",
+          "fallback": "claude-3-sonnet"
+        },
+        {
+          "condition": "task_complexity == 'medium' AND quality_requirement <= 0.9",
+          "route_to": "claude-3-sonnet", 
+          "fallback": "gpt-4"
+        },
+        {
+          "condition": "task_complexity == 'complex' OR quality_requirement > 0.9",
+          "route_to": "gpt-4",
+          "fallback": "claude-3-sonnet"
+        },
+        {
+          "condition": "data_sensitivity == 'high' OR offline_required == true",
+          "route_to": "ollama-llama2",
+          "fallback": "gpt-3.5-turbo"
+        }
+      ]
+    },
+    "quality_first": {
+      "name": "Quality-First Routing",
+      "description": "Always use the highest quality model available",
+      "rules": [
+        {
+          "condition": "true",
+          "route_to": "gpt-4",
+          "fallback": "claude-3-sonnet"
+        }
+      ]
+    },
+    "balanced": {
+      "name": "Balanced Performance",
+      "description": "Balance between cost and quality",
+      "rules": [
+        {
+          "condition": "use_case IN ['customer_support', 'content_creation']",
+          "route_to": "claude-3-sonnet",
+          "fallback": "gpt-3.5-turbo"
+        },
+        {
+          "condition": "use_case IN ['financial_analysis', 'strategic_planning']",
+          "route_to": "gpt-4",
+          "fallback": "claude-3-sonnet"
+        },
+        {
+          "condition": "use_case IN ['data_processing', 'simple_tasks']",
+          "route_to": "gpt-3.5-turbo",
+          "fallback": "ollama-llama2"
+        }
+      ]
+    }
+  },
+  "load_balancing": {
+    "strategy": "round_robin",
+    "health_check": {
+      "enabled": true,
+      "interval": 60,
+      "timeout": 10,
+      "test_prompt": "Hello, how are you?"
+    },
+    "circuit_breaker": {
+      "enabled": true,
+      "failure_threshold": 5,
+      "timeout": 300,
+      "half_open_max_calls": 3
+    },
+    "retry_policy": {
+      "max_retries": 3,
+      "backoff_strategy": "exponential",
+      "base_delay": 1
+    }
+  },
+  "monitoring": {
+    "metrics": [
+      "request_count",
+      "response_time",
+      "token_usage",
+      "cost_per_request",
+      "error_rate",
+      "quality_score"
+    ],
+    "alerting": {
+      "cost_threshold": 100,
+      "error_rate_threshold": 0.05,
+      "response_time_threshold": 10
+    },
+    "logging": {
+      "level": "info",
+      "include_prompts": false,
+      "include_responses": false,
+      "retention_days": 30
+    }
+  }
+}

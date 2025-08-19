@@ -1,0 +1,199 @@
+{
+  "workflows": {
+    "customer_onboarding": {
+      "name": "Customer Onboarding Automation",
+      "description": "Complete customer onboarding process with AI assistance",
+      "trigger": {
+        "event": "new_customer_signup",
+        "conditions": {
+          "plan_type": ["premium", "enterprise"],
+          "company_size": ">50"
+        }
+      },
+      "steps": [
+        {
+          "id": "welcome_email",
+          "type": "ai_action",
+          "agent": "customer_success",
+          "action": "generate_personalized_welcome",
+          "inputs": ["customer_data", "plan_details"],
+          "timeout": 300,
+          "retry_count": 2
+        },
+        {
+          "id": "setup_consultation",
+          "type": "scheduling",
+          "depends_on": ["welcome_email"],
+          "action": "schedule_meeting",
+          "parameters": {
+            "duration": 60,
+            "type": "setup_consultation",
+            "auto_calendar_check": true
+          }
+        },
+        {
+          "id": "resource_preparation",
+          "type": "ai_action",
+          "agent": "marketing_strategist",
+          "action": "prepare_onboarding_materials",
+          "parallel": true,
+          "inputs": ["industry", "use_case", "team_size"]
+        },
+        {
+          "id": "follow_up_sequence",
+          "type": "scheduled_sequence",
+          "depends_on": ["setup_consultation"],
+          "schedule": [
+            {"day": 1, "action": "check_in_email"},
+            {"day": 7, "action": "progress_review"},
+            {"day": 30, "action": "satisfaction_survey"}
+          ]
+        }
+      ],
+      "success_conditions": {
+        "customer_activated": true,
+        "satisfaction_score": ">8",
+        "feature_adoption": ">3"
+      },
+      "failure_handling": {
+        "escalate_to_human": true,
+        "notification_channels": ["slack", "email"]
+      }
+    },
+    "sales_opportunity_qualification": {
+      "name": "AI-Powered Lead Qualification",
+      "description": "Automatically qualify and score sales opportunities",
+      "trigger": {
+        "event": "new_lead_created",
+        "conditions": {
+          "source": ["website", "referral", "linkedin"],
+          "budget_range": ">$10000"
+        }
+      },
+      "steps": [
+        {
+          "id": "data_enrichment",
+          "type": "data_action",
+          "action": "enrich_company_data",
+          "sources": ["linkedin", "clearbit", "company_website"],
+          "timeout": 180
+        },
+        {
+          "id": "qualification_analysis",
+          "type": "ai_action", 
+          "agent": "financial_analyst",
+          "action": "analyze_opportunity",
+          "inputs": ["company_data", "interaction_history", "market_data"],
+          "output": "qualification_score"
+        },
+        {
+          "id": "personalized_outreach",
+          "type": "ai_action",
+          "agent": "customer_success",
+          "action": "create_outreach_strategy",
+          "conditions": {
+            "qualification_score": ">0.7"
+          },
+          "inputs": ["qualification_analysis", "company_profile"]
+        },
+        {
+          "id": "sales_assignment",
+          "type": "routing_action",
+          "depends_on": ["qualification_analysis"],
+          "rules": [
+            {
+              "if": "qualification_score > 0.8 AND deal_size > $50000",
+              "assign_to": "senior_sales_rep"
+            },
+            {
+              "if": "qualification_score > 0.6",
+              "assign_to": "sales_rep"
+            },
+            {
+              "else": "nurture_sequence"
+            }
+          ]
+        }
+      ]
+    },
+    "incident_response": {
+      "name": "Automated Incident Response",
+      "description": "AI-powered incident detection and response",
+      "trigger": {
+        "event": "system_alert",
+        "conditions": {
+          "severity": ["high", "critical"],
+          "component": ["api", "database", "payments"]
+        }
+      },
+      "steps": [
+        {
+          "id": "impact_assessment",
+          "type": "ai_action",
+          "agent": "financial_analyst",
+          "action": "assess_business_impact",
+          "inputs": ["alert_data", "system_metrics", "customer_data"],
+          "priority": "immediate"
+        },
+        {
+          "id": "stakeholder_notification",
+          "type": "notification_action",
+          "depends_on": ["impact_assessment"],
+          "channels": {
+            "critical": ["phone", "slack", "email"],
+            "high": ["slack", "email"],
+            "medium": ["email"]
+          },
+          "templates": {
+            "subject": "System Incident: {{incident.title}}",
+            "escalation_rules": [
+              {"time": 15, "level": "manager"},
+              {"time": 30, "level": "director"},
+              {"time": 60, "level": "executive"}
+            ]
+          }
+        },
+        {
+          "id": "automated_mitigation",
+          "type": "system_action",
+          "parallel": true,
+          "actions": [
+            "scale_resources",
+            "activate_backup_systems",
+            "reroute_traffic"
+          ],
+          "safety_checks": true
+        },
+        {
+          "id": "customer_communication",
+          "type": "ai_action",
+          "agent": "customer_success",
+          "action": "draft_customer_update",
+          "conditions": {
+            "customer_impact": true
+          },
+          "approval_required": true
+        }
+      ]
+    }
+  },
+  "global_settings": {
+    "execution_timeout": 3600,
+    "max_parallel_workflows": 10,
+    "retry_policy": {
+      "max_retries": 3,
+      "backoff_strategy": "exponential",
+      "base_delay": 5
+    },
+    "monitoring": {
+      "log_level": "info",
+      "metrics_enabled": true,
+      "alerts_enabled": true
+    },
+    "approval_settings": {
+      "auto_approve_low_risk": true,
+      "require_approval_threshold": 0.8,
+      "approval_timeout": 1800
+    }
+  }
+}

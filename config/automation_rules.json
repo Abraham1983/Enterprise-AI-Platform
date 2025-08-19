@@ -1,0 +1,425 @@
+{
+  "automation_rules": {
+    "customer_lifecycle": {
+      "trial_to_paid_conversion": {
+        "name": "Trial to Paid Conversion",
+        "description": "Automated nurturing for trial users approaching conversion",
+        "triggers": [
+          {
+            "event": "trial_day_reached",
+            "conditions": {
+              "days_remaining": [7, 3, 1],
+              "engagement_score": ">0.6",
+              "features_used": ">2"
+            }
+          }
+        ],
+        "actions": [
+          {
+            "type": "ai_personalized_email",
+            "agent": "customer_success",
+            "template": "trial_conversion",
+            "personalization": {
+              "include_usage_stats": true,
+              "suggest_upgrade_plan": true,
+              "add_success_stories": true
+            }
+          },
+          {
+            "type": "schedule_demo",
+            "conditions": {
+              "company_size": ">10",
+              "trial_days_remaining": "<=3"
+            },
+            "auto_book": false,
+            "send_calendar_link": true
+          }
+        ],
+        "success_metrics": {
+          "conversion_rate": 0.25,
+          "email_open_rate": 0.4,
+          "demo_booking_rate": 0.15
+        }
+      },
+      "churn_prevention": {
+        "name": "Proactive Churn Prevention",
+        "description": "Identify and prevent customer churn before it happens",
+        "triggers": [
+          {
+            "event": "churn_risk_detected",
+            "conditions": {
+              "churn_probability": ">0.7",
+              "subscription_status": "active",
+              "last_login_days": ">14"
+            }
+          }
+        ],
+        "actions": [
+          {
+            "type": "ai_analysis",
+            "agent": "financial_analyst",
+            "analyze": [
+              "usage_patterns",
+              "support_tickets",
+              "feature_adoption",
+              "payment_history"
+            ],
+            "output": "churn_risk_report"
+          },
+          {
+            "type": "personalized_intervention",
+            "agent": "customer_success",
+            "based_on": "churn_risk_report",
+            "interventions": [
+              "feature_recommendation",
+              "training_offer",
+              "account_review_meeting",
+              "discount_offer"
+            ]
+          },
+          {
+            "type": "human_escalation",
+            "conditions": {
+              "churn_probability": ">0.85",
+              "account_value": ">$5000"
+            },
+            "assign_to": "account_manager",
+            "priority": "high"
+          }
+        ]
+      }
+    },
+    "sales_automation": {
+      "lead_scoring": {
+        "name": "AI-Powered Lead Scoring",
+        "description": "Automatically score and prioritize sales leads",
+        "triggers": [
+          {
+            "event": "lead_created",
+            "conditions": {
+              "source": ["website", "referral", "event"],
+              "contact_info_complete": true
+            }
+          },
+          {
+            "event": "lead_activity",
+            "conditions": {
+              "activity_type": ["email_open", "website_visit", "content_download"]
+            }
+          }
+        ],
+        "scoring_factors": {
+          "demographic": {
+            "weight": 0.3,
+            "factors": {
+              "company_size": {
+                "1-10": 10,
+                "11-50": 25,
+                "51-200": 40,
+                "201-1000": 60,
+                "1000+": 80
+              },
+              "industry": {
+                "technology": 80,
+                "finance": 75,
+                "healthcare": 70,
+                "manufacturing": 60,
+                "other": 40
+              },
+              "job_title": {
+                "ceo|founder|president": 90,
+                "cto|vp": 80,
+                "director|manager": 60,
+                "analyst|coordinator": 30,
+                "other": 20
+              }
+            }
+          },
+          "behavioral": {
+            "weight": 0.4,
+            "factors": {
+              "website_visits": {"per_visit": 5, "max": 50},
+              "page_views": {"per_view": 2, "max": 30},
+              "time_on_site": {"per_minute": 3, "max": 40},
+              "content_downloads": {"per_download": 15, "max": 60},
+              "demo_request": 100,
+              "pricing_page_visit": 25
+            }
+          },
+          "engagement": {
+            "weight": 0.3,
+            "factors": {
+              "email_opens": {"per_open": 5, "max": 25},
+              "email_clicks": {"per_click": 10, "max": 40},
+              "social_media_engagement": {"per_interaction": 8, "max": 30},
+              "webinar_attendance": 50,
+              "survey_completion": 30
+            }
+          }
+        },
+        "actions": [
+          {
+            "score_range": "0-30",
+            "classification": "cold",
+            "actions": [
+              "add_to_nurture_sequence",
+              "monthly_newsletter"
+            ]
+          },
+          {
+            "score_range": "31-60",
+            "classification": "warm", 
+            "actions": [
+              "weekly_content_emails",
+              "product_education_sequence"
+            ]
+          },
+          {
+            "score_range": "61-80",
+            "classification": "hot",
+            "actions": [
+              "assign_to_sales_rep",
+              "schedule_demo_call",
+              "personalized_outreach"
+            ]
+          },
+          {
+            "score_range": "81-100",
+            "classification": "very_hot",
+            "actions": [
+              "immediate_sales_notification",
+              "priority_assignment",
+              "executive_outreach"
+            ]
+          }
+        ]
+      },
+      "deal_progression": {
+        "name": "Automated Deal Progression",
+        "description": "Move deals through sales pipeline automatically",
+        "stage_automation": {
+          "prospecting": {
+            "entry_conditions": ["lead_score > 60"],
+            "auto_actions": [
+              "create_deal_record",
+              "assign_sales_rep",
+              "send_intro_email"
+            ],
+            "exit_conditions": ["first_meeting_scheduled"],
+            "max_duration_days": 14
+          },
+          "qualification": {
+            "entry_conditions": ["meeting_completed"],
+            "auto_actions": [
+              "send_qualification_questions",
+              "schedule_technical_demo"
+            ],
+            "ai_actions": [
+              {
+                "agent": "financial_analyst",
+                "action": "analyze_deal_potential",
+                "inputs": ["company_data", "meeting_notes"]
+              }
+            ],
+            "exit_conditions": ["budget_confirmed", "timeline_defined"],
+            "max_duration_days": 21
+          },
+          "proposal": {
+            "entry_conditions": ["requirements_gathered"],
+            "auto_actions": [
+              "generate_custom_proposal",
+              "schedule_proposal_review"
+            ],
+            "ai_actions": [
+              {
+                "agent": "marketing_strategist",
+                "action": "create_proposal_content",
+                "inputs": ["requirements", "company_profile", "competitive_analysis"]
+              }
+            ],
+            "exit_conditions": ["proposal_presented"],
+            "max_duration_days": 10
+          },
+          "negotiation": {
+            "entry_conditions": ["proposal_reviewed"],
+            "ai_actions": [
+              {
+                "agent": "financial_analyst", 
+                "action": "price_optimization",
+                "inputs": ["deal_size", "customer_profile", "competitive_pressure"]
+              }
+            ],
+            "approval_workflows": {
+              "discount_threshold": 0.15,
+              "approval_chain": ["sales_manager", "sales_director"]
+            },
+            "exit_conditions": ["terms_agreed"],
+            "max_duration_days": 30
+          },
+          "closed_won": {
+            "entry_conditions": ["contract_signed"],
+            "auto_actions": [
+              "trigger_onboarding_workflow",
+              "notify_customer_success",
+              "update_revenue_forecast"
+            ]
+          }
+        }
+      }
+    },
+    "financial_automation": {
+      "expense_categorization": {
+        "name": "AI Expense Categorization",
+        "description": "Automatically categorize and approve expenses",
+        "triggers": [
+          {
+            "event": "expense_submitted",
+            "conditions": {
+              "amount": ">0",
+              "receipt_attached": true
+            }
+          }
+        ],
+        "categorization_rules": {
+          "travel": {
+            "keywords": ["flight", "hotel", "taxi", "uber", "airbnb", "rental car"],
+            "merchant_patterns": ["airline", "booking.com", "expedia"],
+            "auto_approve_limit": 2000
+          },
+          "software": {
+            "keywords": ["software", "saas", "subscription", "license"],
+            "merchant_patterns": ["adobe", "microsoft", "google", "aws"],
+            "auto_approve_limit": 500
+          },
+          "marketing": {
+            "keywords": ["advertising", "marketing", "conference", "event"],
+            "merchant_patterns": ["facebook", "google ads", "linkedin"],
+            "auto_approve_limit": 1000
+          },
+          "office_supplies": {
+            "keywords": ["supplies", "equipment", "furniture"],
+            "merchant_patterns": ["amazon", "staples", "office depot"],
+            "auto_approve_limit": 200
+          }
+        },
+        "ai_validation": {
+          "agent": "financial_analyst",
+          "validate": [
+            "receipt_authenticity",
+            "amount_reasonableness", 
+            "business_purpose",
+            "policy_compliance"
+          ],
+          "confidence_threshold": 0.85
+        },
+        "approval_workflow": {
+          "auto_approve": {
+            "conditions": [
+              "amount <= category_limit",
+              "ai_confidence > 0.9",
+              "policy_compliant == true"
+            ]
+          },
+          "manager_approval": {
+            "conditions": [
+              "amount > category_limit",
+              "amount <= 5000"
+            ]
+          },
+          "finance_approval": {
+            "conditions": [
+              "amount > 5000"
+            ]
+          }
+        }
+      },
+      "invoice_processing": {
+        "name": "Automated Invoice Processing",
+        "description": "AI-powered invoice validation and payment processing",
+        "triggers": [
+          {
+            "event": "invoice_received",
+            "channels": ["email", "api", "upload"]
+          }
+        ],
+        "processing_steps": [
+          {
+            "step": "data_extraction",
+            "ai_agent": "financial_analyst",
+            "extract": [
+              "vendor_name",
+              "invoice_number",
+              "amount",
+              "due_date",
+              "line_items",
+              "tax_amount"
+            ]
+          },
+          {
+            "step": "validation",
+            "checks": [
+              "vendor_in_approved_list",
+              "po_number_match",
+              "amount_within_budget",
+              "duplicate_detection"
+            ]
+          },
+          {
+            "step": "approval_routing",
+            "rules": [
+              {
+                "condition": "amount <= 1000 AND vendor_approved",
+                "action": "auto_approve"
+              },
+              {
+                "condition": "amount <= 10000",
+                "action": "department_manager_approval"
+              },
+              {
+                "condition": "amount > 10000",
+                "action": "finance_director_approval"
+              }
+            ]
+          },
+          {
+            "step": "payment_scheduling",
+            "conditions": ["approved == true"],
+            "strategy": "optimize_cash_flow",
+            "ai_optimization": {
+              "agent": "financial_analyst",
+              "consider": [
+                "payment_terms",
+                "early_payment_discounts",
+                "cash_flow_forecast",
+                "vendor_relationship"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "global_settings": {
+    "execution_mode": "real_time",
+    "batch_processing": {
+      "enabled": true,
+      "batch_size": 100,
+      "processing_interval": 300
+    },
+    "error_handling": {
+      "retry_attempts": 3,
+      "escalation_threshold": 5,
+      "fallback_to_human": true
+    },
+    "audit_logging": {
+      "enabled": true,
+      "log_level": "detailed",
+      "retention_days": 365
+    },
+    "performance_monitoring": {
+      "track_execution_time": true,
+      "track_success_rate": true,
+      "alert_on_degradation": true
+    }
+  }
+}

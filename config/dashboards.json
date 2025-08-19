@@ -1,0 +1,209 @@
+{
+  "dashboards": {
+    "executive_overview": {
+      "name": "Executive Dashboard",
+      "description": "High-level business metrics and AI performance",
+      "refresh_interval": 300,
+      "widgets": [
+        {
+          "id": "revenue_kpi",
+          "type": "kpi_card",
+          "title": "Monthly Recurring Revenue",
+          "data_source": "financial_db",
+          "query": "SELECT SUM(monthly_value) FROM subscriptions WHERE status='active'",
+          "format": "currency",
+          "target": 100000,
+          "alert_threshold": 0.9,
+          "size": "large"
+        },
+        {
+          "id": "ai_automation_savings",
+          "type": "kpi_card", 
+          "title": "AI Automation Savings",
+          "data_source": "analytics_db",
+          "calculation": {
+            "type": "ai_analysis",
+            "agent": "financial_analyst",
+            "inputs": ["task_automation_hours", "average_hourly_cost"],
+            "formula": "automation_hours * hourly_cost"
+          },
+          "format": "currency",
+          "trend_period": "30d"
+        },
+        {
+          "id": "customer_satisfaction",
+          "type": "gauge",
+          "title": "Customer Satisfaction Score",
+          "data_source": "customer_db",
+          "query": "SELECT AVG(rating) FROM satisfaction_surveys WHERE created_at >= NOW() - INTERVAL '30 days'",
+          "min": 0,
+          "max": 10,
+          "thresholds": [
+            {"value": 7, "color": "red"},
+            {"value": 8, "color": "yellow"},
+            {"value": 9, "color": "green"}
+          ]
+        },
+        {
+          "id": "ai_agent_performance",
+          "type": "chart",
+          "chart_type": "line",
+          "title": "AI Agent Success Rate",
+          "data_source": "ai_metrics",
+          "time_range": "7d",
+          "series": [
+            {
+              "name": "Financial Analyst",
+              "query": "SELECT date, success_rate FROM agent_metrics WHERE agent_name='financial_analyst'"
+            },
+            {
+              "name": "Customer Success",
+              "query": "SELECT date, success_rate FROM agent_metrics WHERE agent_name='customer_success'"
+            }
+          ]
+        },
+        {
+          "id": "workflow_efficiency",
+          "type": "table",
+          "title": "Top Performing Workflows",
+          "data_source": "workflow_analytics",
+          "query": "SELECT workflow_name, execution_count, avg_duration, success_rate FROM workflow_stats ORDER BY success_rate DESC LIMIT 10",
+          "columns": [
+            {"field": "workflow_name", "title": "Workflow"},
+            {"field": "execution_count", "title": "Executions"},
+            {"field": "avg_duration", "title": "Avg Duration", "format": "duration"},
+            {"field": "success_rate", "title": "Success Rate", "format": "percentage"}
+          ]
+        }
+      ],
+      "filters": [
+        {
+          "type": "date_range",
+          "default": "30d",
+          "options": ["7d", "30d", "90d", "1y"]
+        },
+        {
+          "type": "business_unit",
+          "default": "all",
+          "source": "SELECT DISTINCT department FROM users"
+        }
+      ]
+    },
+    "ai_operations": {
+      "name": "AI Operations Dashboard", 
+      "description": "Detailed AI agent and automation metrics",
+      "refresh_interval": 60,
+      "widgets": [
+        {
+          "id": "model_usage",
+          "type": "chart",
+          "chart_type": "pie",
+          "title": "Model Usage Distribution",
+          "data_source": "ai_usage",
+          "query": "SELECT model_name, COUNT(*) as usage_count FROM ai_requests WHERE created_at >= NOW() - INTERVAL '24 hours' GROUP BY model_name"
+        },
+        {
+          "id": "response_times",
+          "type": "chart",
+          "chart_type": "histogram",
+          "title": "AI Response Time Distribution",
+          "data_source": "ai_metrics",
+          "query": "SELECT response_time FROM ai_requests WHERE created_at >= NOW() - INTERVAL '1 hour'",
+          "bins": 20
+        },
+        {
+          "id": "token_consumption",
+          "type": "chart", 
+          "chart_type": "area",
+          "title": "Token Consumption Over Time",
+          "data_source": "ai_usage",
+          "time_range": "24h",
+          "series": [
+            {"name": "Input Tokens", "field": "input_tokens"},
+            {"name": "Output Tokens", "field": "output_tokens"}
+          ],
+          "stacked": true
+        },
+        {
+          "id": "error_analysis",
+          "type": "table",
+          "title": "Recent AI Errors",
+          "data_source": "error_logs",
+          "query": "SELECT timestamp, agent_name, error_type, error_message FROM ai_errors WHERE timestamp >= NOW() - INTERVAL '1 hour' ORDER BY timestamp DESC LIMIT 20",
+          "auto_refresh": 30
+        }
+      ]
+    },
+    "financial_analytics": {
+      "name": "Financial Analytics",
+      "description": "Revenue, costs, and ROI tracking",
+      "refresh_interval": 900,
+      "widgets": [
+        {
+          "id": "revenue_forecast",
+          "type": "chart",
+          "chart_type": "line",
+          "title": "Revenue Forecast vs Actual",
+          "data_source": "financial_db",
+          "ai_enhanced": true,
+          "ai_agent": "financial_analyst",
+          "series": [
+            {"name": "Actual Revenue", "query": "actual_revenue_query"},
+            {"name": "AI Forecast", "type": "ai_prediction", "model": "revenue_forecasting"}
+          ],
+          "annotations": [
+            {"type": "events", "source": "business_events"},
+            {"type": "campaigns", "source": "marketing_campaigns"}
+          ]
+        },
+        {
+          "id": "cost_breakdown",
+          "type": "chart",
+          "chart_type": "stacked_bar",
+          "title": "Monthly Cost Breakdown",
+          "data_source": "expense_db",
+          "query": "SELECT month, category, SUM(amount) FROM expenses GROUP BY month, category",
+          "drill_down": true
+        },
+        {
+          "id": "ai_roi_calculator",
+          "type": "interactive_widget",
+          "title": "AI ROI Calculator",
+          "inputs": [
+            {"name": "automation_hours", "type": "number", "label": "Hours Automated/Month"},
+            {"name": "hourly_rate", "type": "number", "label": "Average Hourly Rate"},
+            {"name": "ai_costs", "type": "number", "label": "Monthly AI Costs"}
+          ],
+          "calculation": {
+            "type": "ai_analysis",
+            "agent": "financial_analyst",
+            "formula": "(automation_hours * hourly_rate - ai_costs) / ai_costs * 100"
+          },
+          "output_format": "percentage"
+        }
+      ]
+    }
+  },
+  "global_settings": {
+    "theme": "enterprise",
+    "timezone": "UTC",
+    "currency": "USD",
+    "number_format": "US",
+    "cache_duration": 300,
+    "export_formats": ["pdf", "excel", "csv"],
+    "access_control": {
+      "executive_overview": ["executive", "manager"],
+      "ai_operations": ["admin", "ai_engineer"],
+      "financial_analytics": ["finance", "executive"]
+    },
+    "alerts": {
+      "enabled": true,
+      "channels": ["email", "slack", "webhook"],
+      "escalation_rules": [
+        {"threshold": "critical", "notify": "immediately"},
+        {"threshold": "high", "notify": "5m"},
+        {"threshold": "medium", "notify": "30m"}
+      ]
+    }
+  }
+}

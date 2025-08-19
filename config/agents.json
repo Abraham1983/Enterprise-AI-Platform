@@ -1,0 +1,82 @@
+{
+  "agents": {
+    "financial_analyst": {
+      "name": "Financial Analyst",
+      "description": "Analyzes financial data and generates reports",
+      "model": "gpt-4",
+      "temperature": 0.2,
+      "max_tokens": 2000,
+      "system_prompt": "You are a senior financial analyst with 15+ years experience. Provide detailed, data-driven insights with clear recommendations.",
+      "tools": ["calculator", "data_analysis", "chart_generator"],
+      "memory_enabled": true,
+      "context_window": 8000,
+      "specialized_skills": [
+        "Financial modeling",
+        "Risk assessment", 
+        "Market analysis",
+        "ROI calculations"
+      ],
+      "output_format": "structured_report",
+      "triggers": [
+        "revenue_analysis",
+        "expense_review", 
+        "investment_evaluation"
+      ]
+    },
+    "customer_success": {
+      "name": "Customer Success Manager",
+      "description": "Manages customer relationships and satisfaction",
+      "model": "claude-3-sonnet",
+      "temperature": 0.7,
+      "max_tokens": 1500,
+      "system_prompt": "You are an empathetic customer success manager focused on building long-term relationships and ensuring customer satisfaction.",
+      "tools": ["email_composer", "sentiment_analysis", "scheduling"],
+      "memory_enabled": true,
+      "context_window": 6000,
+      "specialized_skills": [
+        "Relationship building",
+        "Conflict resolution",
+        "Upselling strategies",
+        "Churn prevention"
+      ],
+      "output_format": "conversational",
+      "triggers": [
+        "customer_complaint",
+        "renewal_opportunity",
+        "satisfaction_survey"
+      ]
+    },
+    "marketing_strategist": {
+      "name": "Marketing Strategist", 
+      "description": "Develops marketing campaigns and strategies",
+      "model": "gpt-4-turbo",
+      "temperature": 0.8,
+      "max_tokens": 2500,
+      "system_prompt": "You are a creative marketing strategist with expertise in digital marketing, brand positioning, and campaign optimization.",
+      "tools": ["content_generator", "a_b_tester", "analytics_tracker"],
+      "memory_enabled": true,
+      "context_window": 10000,
+      "specialized_skills": [
+        "Campaign planning",
+        "Content strategy",
+        "Brand positioning",
+        "Market segmentation"
+      ],
+      "output_format": "action_plan",
+      "triggers": [
+        "campaign_launch",
+        "brand_analysis",
+        "competitor_research"
+      ]
+    }
+  },
+  "global_settings": {
+    "default_model": "gpt-4",
+    "fallback_model": "gpt-3.5-turbo",
+    "max_concurrent_agents": 5,
+    "response_timeout": 30,
+    "memory_retention_days": 90,
+    "auto_learning_enabled": true,
+    "quality_threshold": 0.85
+  }
+}
