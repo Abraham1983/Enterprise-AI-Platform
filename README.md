@@ -253,7 +253,7 @@ print(f"Bitcoin QR: {result.qr_codes['bitcoin']}")
 
 ### **AI & Machine Learning**
 - **OpenAI GPT-4**: Industry-leading language model
-- **Anthropic Claude**: Advanced reasoning capabilities
+- **Multiple LLM Integration**: OpenAI, local models, and cloud providers
 - **scikit-learn**: Production ML algorithms
 - **sentence-transformers**: State-of-the-art embeddings
 - **FAISS**: Facebook's similarity search library
