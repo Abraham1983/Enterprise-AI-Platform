@@ -727,14 +727,6 @@ llm_config:
         context: 8000
         priority: 3
   
-  anthropic:
-    api_key: "${ANTHROPIC_API_KEY}"
-    models:
-      claude-3-haiku:
-        cost: 0.00025
-        context: 200000
-        priority: 2
-  
   ollama:
     enabled: true
     endpoint: "http://localhost:11434"
@@ -1189,7 +1181,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🌟 Acknowledgments
 
 - **OpenAI** for GPT-4 API access
-- **Anthropic** for Claude API integration
 - **Stripe** for payment processing capabilities
 - **FastAPI Community** for excellent framework support
 - **PostgreSQL Team** for robust database foundation
